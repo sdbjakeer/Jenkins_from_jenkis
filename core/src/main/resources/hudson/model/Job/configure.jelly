@@ -56,7 +56,10 @@ THE SOFTWARE.
           <f:entry title="${%Description}" help="${app.markupFormatter.helpUrl}">
             <f:textarea name="description" value="${it.description}" codemirror-mode="${app.markupFormatter.codeMirrorMode}" codemirror-config="${app.markupFormatter.codeMirrorConfig}" previewEndpoint="/markupFormatter/previewDescription"/>
           </f:entry>
-          <f:dropdownDescriptorSelector title="${%Icon}" field="icon" />
+          <j:invokeStatic var="icons" className="hudson.model.JobIconDescriptor" method="all" />
+          <j:if test="${icons.size() gt 1}">
+            <f:dropdownDescriptorSelector title="${%Icon}" field="icon" descriptors="${icons}" />
+          </j:if>
         </div>
 
         <f:descriptorList field="properties" descriptors="${h.getJobPropertyDescriptors(it)}" forceRowSet="true"/>
