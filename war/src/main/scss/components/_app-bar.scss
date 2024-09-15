@@ -81,6 +81,7 @@
   text-overflow: ellipsis;
 
   svg {
+    color: var(--text-color) !important;
     width: 2rem !important;
     height: 2rem !important;
   }

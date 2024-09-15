@@ -31,11 +31,18 @@ THE SOFTWARE.
       <div class="jenkins-app-bar">
         <div class="jenkins-app-bar__content jenkins-build-caption">
           <j:set var="lastBuild" value="${it.lastBuild}" />
-          <j:if test="${lastBuild != null}">
-            <a href="${rootURL + '/' + lastBuild.url}" class="jenkins-!-display-contents" tabindex="-1">
-              <l:icon src="symbol-status-${lastBuild.iconColor.iconName}" tooltip="${lastBuild.iconColor.description}"/>
-            </a>
-          </j:if>
+          <j:choose>
+            <j:when test="${lastBuild != null}">
+              <a href="${rootURL + '/' + lastBuild.url}" class="jenkins-!-display-contents" tabindex="-1">
+                <l:icon src="${it.icon.iconClassName}" tooltip="${it.icon.description}" />
+              </a>
+            </j:when>
+            <j:otherwise>
+              <a href="${rootURL + '/' + it.url}" class="jenkins-!-display-contents" tabindex="-1">
+                <l:icon src="${it.icon.iconClassName}" tooltip="${it.icon.description}"/>
+              </a>
+            </j:otherwise>
+          </j:choose>
           <h1 class="job-index-headline page-headline">
             <l:breakable value="${it.displayName}"/>
           </h1>

@@ -185,6 +185,8 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
 
     boolean keepDependencies;
 
+    private JobIcon icon;
+
     /**
      * List of properties configured for this project.
      */
@@ -244,6 +246,10 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
         } else {
             // From the old Hudson, or doCreateItem. Create this file now.
             saveNextBuildNumber();
+        }
+
+        if (icon == null) {
+           setIcon(new BuildStatusIcon());
         }
 
         if (properties == null) // didn't exist < 1.72
@@ -1257,6 +1263,32 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
     }
 
     /**
+     * Gets the icon used for this job.
+     *
+     * @return the icon.
+     *
+     * @since TODO
+     */
+    public JobIcon getIcon() {
+        return icon;
+    }
+
+    /**
+     * Sets the icon used for this job.
+     *
+     * @param icon the icon.
+     *
+     * @since TODO
+     */
+    public void setIcon(JobIcon icon) {
+        this.icon = icon;
+
+        if (icon != null) {
+            icon.setOwner(this);
+        }
+    }
+
+    /**
      * Get the current health report for a job.
      *
      * @return the health report. Never returns null
@@ -1398,6 +1430,14 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
         try {
             try (BulkChange bc = new BulkChange(this)) {
                 setDisplayName(json.optString("displayNameOrNull"));
+
+                JSONObject jobIconConfig = json.optJSONObject("icon");
+                if (jobIconConfig != null) {
+                    JobIcon jobIcon = Descriptor.bindJSON(req, JobIcon.class, jobIconConfig);
+                    setIcon(jobIcon);
+                } else {
+                    setIcon(null);
+                }
 
                 logRotator = null;
 
